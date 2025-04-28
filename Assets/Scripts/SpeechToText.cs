@@ -28,30 +28,44 @@ public class SpeechToText : MonoBehaviour
         {
             recognizedText.Append(text + " ");
             string[] strings = text.Split(' ');
-            float result = -1;
+            //float result = -1;
 
             Dictionary<string, float> wordToNumber = new Dictionary<string, float>()
-        {
-            {"zero", 0}, {"one", 1}, {"two", 2}, {"three", 3}, {"four", 4},
-            {"five", 5}, {"six", 6}, {"seven", 7}, {"eight", 8}, {"nine", 9},
-            {"ten", 10}, {"eleven", 11}, {"twelve", 12}, {"thirteen", 13},
-            {"fourteen", 14}, {"fifteen", 15}, {"sixteen", 16}, {"seventeen", 17},
-            {"eighteen", 18}, {"nineteen", 19}, {"twenty", 20}
-        };
+            {
+                {"zero", 0}, {"one", 1}, {"two", 2}, {"three", 3}, {"four", 4},
+                {"five", 5}, {"six", 6}, {"seven", 7}, {"eight", 8}, {"nine", 9},
+                {"ten", 10}, {"can", 10}, {"pin", 10}, {"fan", 10}, {"eleven", 11}, {"twelve", 12}, {"thirteen", 13},
+                {"fourteen", 14}, {"fifteen", 15}, {"sixteen", 16}, {"seventeen", 17},
+                {"eighteen", 18}, {"nineteen", 19}, {"twenty", 20}, {"thirty", 30},
+                {"forty", 40}, {"fifty", 50}, {"sixty", 60}, {"seventy", 70},
+                {"eighty", 80}, {"ninety", 90}
+            };
+
+            float result = -1;
 
             foreach (string s in strings)
             {
                 string word = s.ToLower().Trim();
-                if (float.TryParse(word, out result))
+                float temp;
+
+                if (float.TryParse(word, out temp))
                 {
+                    result = temp;
                     Debug.Log($"Parsed numeric string: {result}");
                     break;
                 }
-                else if (wordToNumber.TryGetValue(word, out result))
+                else if (wordToNumber.TryGetValue(word, out temp))
                 {
+                    result = temp;
                     Debug.Log($"Parsed word as number: {result}");
                     break;
                 }
+            }
+
+            if (result == -1)
+            {
+                Debug.Log("No number found in the string.");
+                return;
             }
 
             if (result == -1)
@@ -69,7 +83,7 @@ public class SpeechToText : MonoBehaviour
 
         dictationRecognizer.DictationHypothesis += (text) =>
         {
-            //Debug.Log("Hypothesis: " + text);
+            Debug.Log("Hypothesis: " + text);
         };
 
         dictationRecognizer.DictationComplete += (completionCause) =>
